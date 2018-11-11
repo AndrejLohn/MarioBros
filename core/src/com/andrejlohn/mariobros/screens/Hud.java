@@ -44,7 +44,7 @@ public class Hud {
      * @see         Label
      * @see         Table#add(Actor)
      * @see         Table#row()
-     * @see         Stage#addActor(Actor) 
+     * @see         Stage#addActor(Actor)
      */
     public Hud(SpriteBatch sb) {
         worldTimer = 300;
