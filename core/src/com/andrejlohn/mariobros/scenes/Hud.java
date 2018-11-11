@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * Represents the games HUD containing world, timer and score information.
  * This information is displayed via libGDX scene2D labels.
  *
+ * @version %I%, %G%
  * @see Label
  */
 public class Hud {
