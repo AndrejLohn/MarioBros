@@ -1,4 +1,4 @@
-package com.andrejlohn.mariobros.Screens;
+package com.andrejlohn.mariobros.screens;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.badlogic.gdx.Gdx;

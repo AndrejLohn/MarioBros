@@ -1,6 +1,6 @@
 package com.andrejlohn.mariobros;
 
-import com.andrejlohn.mariobros.Screens.PlayScreen;
+import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
