@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -30,13 +30,13 @@ public class PlayScreen implements Screen {
      *
      * @param game  the MarioBros game
      * @see         OrthographicCamera
-     * @see         StretchViewport
+     * @see         FitViewport
      */
     public PlayScreen(MarioBros game) {
         this.game = game;
         texture = new Texture("badlogic.jpg");
         gameCam = new OrthographicCamera();
-        gamePort = new StretchViewport(800, 480, gameCam);
+        gamePort = new FitViewport(800, 480, gameCam);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PlayScreen implements Screen {
      *
      * @param width     the screen width
      * @param height    the screen height
-     * @see             StretchViewport#update(int, int)
+     * @see             FitViewport#update(int, int)
      */
     @Override
     public void resize(int width, int height) {
