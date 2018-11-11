@@ -1,6 +1,7 @@
 package com.andrejlohn.mariobros.screens;
 
 import com.andrejlohn.mariobros.MarioBros;
+import com.andrejlohn.mariobros.scenes.Hud;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;

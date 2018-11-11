@@ -1,4 +1,4 @@
-package com.andrejlohn.mariobros.screens;
+package com.andrejlohn.mariobros.scenes;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.badlogic.gdx.graphics.Color;
