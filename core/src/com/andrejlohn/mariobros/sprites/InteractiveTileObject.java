@@ -1,6 +1,7 @@
 package com.andrejlohn.mariobros.sprites;
 
 import com.andrejlohn.mariobros.MarioBros;
+import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -28,13 +29,14 @@ public abstract class InteractiveTileObject {
     /**
      * Creates the interactive game world object.
      *
-     * @param world     the game world
-     * @param map       the tiled map
+     * @param screen    the play screen
      * @param bounds    this objects bounding box
+     * @see             PlayScreen
+     * @see             Rectangle
      */
-    public InteractiveTileObject(World world, TiledMap map, Rectangle bounds) {
-        this.world = world;
-        this.map = map;
+    public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
+        this.world = screen.getWorld();
+        this.map = screen.getMap();
         this.bounds = bounds;
 
         BodyDef bDef = new BodyDef();

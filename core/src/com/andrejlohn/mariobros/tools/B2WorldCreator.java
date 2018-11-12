@@ -1,6 +1,7 @@
 package com.andrejlohn.mariobros.tools;
 
 import com.andrejlohn.mariobros.MarioBros;
+import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Brick;
 import com.andrejlohn.mariobros.sprites.Coin;
 import com.badlogic.gdx.maps.MapObject;
@@ -23,17 +24,19 @@ public class B2WorldCreator {
     /**
      * Creates the game world. Sets up all map objects (ground, pipes, boxes, coins).
      *
-     * @param world the Box2D world
-     * @param map   the tiled map
-     * @see         BodyDef
-     * @see         PolygonShape
-     * @see         FixtureDef
-     * @see         MapObject
-     * @see         TiledMap#getLayers()
-     * @see         World#createBody(BodyDef)
-     * @see         Body#createFixture(FixtureDef)
+     * @param screen    the play screen
+     * @see             PlayScreen
+     * @see             BodyDef
+     * @see             PolygonShape
+     * @see             FixtureDef
+     * @see             MapObject
+     * @see             TiledMap#getLayers()
+     * @see             World#createBody(BodyDef)
+     * @see             Body#createFixture(FixtureDef)
      */
-    public B2WorldCreator(World world, TiledMap map) {
+    public B2WorldCreator(PlayScreen screen) {
+        TiledMap map = screen.getMap();
+        World world = screen.getWorld();
         BodyDef bDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fDef = new FixtureDef();
@@ -83,7 +86,7 @@ public class B2WorldCreator {
                 map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Brick(world, map, rect);
+            new Brick(screen, rect);
         }
 
         // Create coin bodies/fixtures
@@ -91,7 +94,7 @@ public class B2WorldCreator {
                 map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Coin(world, map, rect);
+            new Coin(screen, rect);
         }
     }
 }

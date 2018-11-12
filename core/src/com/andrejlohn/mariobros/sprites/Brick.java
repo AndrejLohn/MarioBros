@@ -2,11 +2,10 @@ package com.andrejlohn.mariobros.sprites;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
+import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.World;
 
 /**
  * This class represents an interactive brick in the game world. When the player character jumps
@@ -20,19 +19,20 @@ public class Brick extends InteractiveTileObject {
     /**
      * Creates the brick.
      *
-     * @param world     the game world
-     * @param map       the tiled map
+     * @param screen    the play screen
      * @param bounds    this bricks bounding box
+     * @see             PlayScreen
+     * @see             Rectangle
      */
-    public Brick(World world, TiledMap map, Rectangle bounds) {
-        super(world, map, bounds);
+    public Brick(PlayScreen screen, Rectangle bounds) {
+        super(screen, bounds);
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.BRICK_BIT);
     }
 
     /**
      * Reacts to a hit by the player characters head.
-     * On hit this brick is destroyed.
+     * On hit this brick is destroyed and a sound is played.
      */
     @Override
     public void onHeadHit() {

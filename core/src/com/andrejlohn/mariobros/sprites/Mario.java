@@ -40,17 +40,18 @@ public class Mario extends Sprite {
     /**
      * Creates the player character within the game world. Sets up the move animations.
      *
-     * @param world the game world
-     * @see         #defineMario()
-     * @see         World
-     * @see         TextureRegion
-     * @see         com.badlogic.gdx.graphics.g2d.TextureAtlas#findRegion(String)
-     * @see         Sprite#setBounds(float, float, float, float)
-     * @see         Sprite#setRegion(Texture)
+     * @param screen    the play screen
+     * @see             #defineMario()
+     * @see             PlayScreen
+     * @see             World
+     * @see             TextureRegion
+     * @see             com.badlogic.gdx.graphics.g2d.TextureAtlas#findRegion(String)
+     * @see             Sprite#setBounds(float, float, float, float)
+     * @see             Sprite#setRegion(Texture)
      */
-    public Mario(World world, PlayScreen screen) {
+    public Mario(PlayScreen screen) {
         super(screen.getTextureAtlas().findRegion("little_mario"));
-        this.world = world;
+        this.world = screen.getWorld();
 
         currentState = State.STANDING;
         previousState = State.STANDING;
