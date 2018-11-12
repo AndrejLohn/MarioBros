@@ -8,6 +8,7 @@ import com.andrejlohn.mariobros.tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -55,6 +56,9 @@ public class PlayScreen implements Screen {
     // Character
     private Mario player;
 
+    // Music
+    private Music music;
+
 
     /**
      * Creates the PlayScreen for a running MarioBros game. Sets up the game camera, viewport, HUD
@@ -96,6 +100,10 @@ public class PlayScreen implements Screen {
         player = new Mario(world, this);
 
         world.setContactListener(new WorldContactListener());
+
+        music = MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class);
+        music.setLooping(true);
+        music.play();
     }
 
     /**

@@ -2,6 +2,9 @@ package com.andrejlohn.mariobros;
 
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
@@ -25,6 +28,13 @@ public class MarioBros extends Game {
 
 	public SpriteBatch batch;
 
+	/* WARNING Using AssetManager in a static way can cause issues, especially on Android.
+	Instead you may want to pass around AssetManager to those classes that need it.
+	We will use it in the static context to save time for now.
+	DIRECT COPY FROM THE TUTORIAL
+	 */
+	public static AssetManager manager;
+
     /**
      * Creates the Game. Sets up the SpriteBatch and the PlayScreen.
      *
@@ -34,6 +44,13 @@ public class MarioBros extends Game {
     @Override
 	public void create () {
 		batch = new SpriteBatch();
+        manager = new AssetManager();
+        manager.load("audio/music/01_main_theme_overworld.mp3", Music.class);
+        manager.load("audio/sounds/smb_coin.wav", Sound.class);
+        manager.load("audio/sounds/smb_bump.wav", Sound.class);
+        manager.load("audio/sounds/smb_breakblock.wav", Sound.class);
+        manager.finishLoading();
+
 		setScreen(new PlayScreen(this));
 	}
 
@@ -50,10 +67,14 @@ public class MarioBros extends Game {
     /**
      * Disposes all game elements not subject to the garbage collection. Prevents memory leak.
      *
+     * @see Game#dispose()
      * @see SpriteBatch#dispose()
+     * @see AssetManager#dispose()
      */
     @Override
 	public void dispose () {
+        super.dispose();
 		batch.dispose();
+		manager.dispose();
 	}
 }
