@@ -16,8 +16,14 @@ import com.badlogic.gdx.physics.box2d.Manifold;
  */
 public class WorldContactListener implements ContactListener {
 
-
-
+    /**
+     * Reacts to contact initialisation between two game world objects.
+     *
+     * @param contact   the contact information
+     * @see Contact#getFixtureA()
+     * @see Contact#getFixtureB() 
+     * @see Fixture#getUserData()
+     */
     @Override
     public void beginContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();
