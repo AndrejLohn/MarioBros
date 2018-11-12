@@ -172,19 +172,20 @@ public class Mario extends Sprite {
         FixtureDef fDef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(6 / MarioBros.PPM);
+        fDef.filter.categoryBits = MarioBros.MARIO_BIT;
+        fDef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.BRICK_BIT | MarioBros.COIN_BIT;
 
         fDef.shape = shape;
         b2Body.createFixture(fDef);
 
         // Additional shape to act as the characters feet. this avoids the issue of a jump animation
         // trigger if the character walks over a connection between game objects.
-        FixtureDef fDef2 = new FixtureDef();
         EdgeShape feet = new EdgeShape();
         feet.set(
                 new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM),
                 new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
-        fDef2.shape = feet;
-        b2Body.createFixture(fDef2);
+        fDef.shape = feet;
+        b2Body.createFixture(fDef);
 
         EdgeShape head = new EdgeShape();
         head.set(

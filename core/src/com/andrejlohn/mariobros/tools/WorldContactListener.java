@@ -21,7 +21,7 @@ public class WorldContactListener implements ContactListener {
      *
      * @param contact   the contact information
      * @see Contact#getFixtureA()
-     * @see Contact#getFixtureB() 
+     * @see Contact#getFixtureB()
      * @see Fixture#getUserData()
      */
     @Override
