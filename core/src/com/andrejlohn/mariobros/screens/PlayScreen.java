@@ -130,7 +130,7 @@ public class PlayScreen implements Screen {
      * This represents the update part of the game cycle.
      *
      * @param dt    the time passed
-     * @see         World#step(float, int, int) 
+     * @see         World#step(float, int, int)
      * @see         OrthographicCamera#update()
      * @see         OrthogonalTiledMapRenderer#setView(OrthographicCamera)
      * @see         Mario#update(float)

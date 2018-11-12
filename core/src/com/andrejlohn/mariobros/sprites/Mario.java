@@ -3,6 +3,7 @@ package com.andrejlohn.mariobros.sprites;
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * This represents the player character in the game.
@@ -20,12 +22,21 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Mario extends Sprite {
 
+    public enum State { FALLING, JUMPING, STANDING, RUNNING };
+    public State currentState;
+    public State previousState;
+
     public World world;
     public Body b2Body;
+
     private TextureRegion marioStand;
+    private Animation<TextureRegion> marioRun;
+    private Animation<TextureRegion> marioJump;
+    private boolean runningRight;
+    private float stateTimer;
 
     /**
-     * Creates the player character within the game world.
+     * Creates the player character within the game world. Sets up the move animations.
      *
      * @param world the game world
      * @see         #defineMario()
@@ -38,10 +49,103 @@ public class Mario extends Sprite {
     public Mario(World world, PlayScreen screen) {
         super(screen.getTextureAtlas().findRegion("little_mario"));
         this.world = world;
-        defineMario();
+
+        currentState = State.STANDING;
+        previousState = State.STANDING;
+        stateTimer = 0;
+        runningRight = true;
+
+        // Set up the run animation
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+        for(int i=1; i<4; i++){
+            frames.add(new TextureRegion(getTexture(), 1 + i * 16, 11, 16, 16));
+        }
+        marioRun = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
+        // Set up the jump animation
+        for(int i=4; i<6; i++){
+            frames.add(new TextureRegion(getTexture(), 1 + i * 16, 11, 16, 16));
+        }
+        marioJump = new Animation<TextureRegion>(0.1f, frames);
+        frames.clear();
+
         marioStand = new TextureRegion(getTexture(), 1, 11, 16, 16);
+
+        defineMario();
         setBounds(0, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
         setRegion(marioStand);
+    }
+
+    /**
+     * Updates the player character based on the time passed since the ast update.
+     *
+     * @param dt    the time since the last update
+     * @see         Sprite#setPosition(float, float)
+     */
+    public void update(float dt) {
+        setPosition(
+                b2Body.getPosition().x - getWidth() / 2,
+                b2Body.getPosition().y - getHeight() / 2);
+
+        setRegion(getFrame(dt));
+    }
+
+    /**
+     * Gets the current frame of the character animation with respect to the time passed.
+     *
+     * @param dt    the time passed
+     * @return      the current animation frame
+     */
+    public TextureRegion getFrame(float dt) {
+        currentState = getState();
+        TextureRegion region;
+
+        switch(currentState) {
+            case JUMPING:
+                region = marioJump.getKeyFrame(stateTimer);
+                break;
+            case RUNNING:
+                region = marioRun.getKeyFrame(stateTimer, true);
+                break;
+            case FALLING:
+            case STANDING:
+            default:
+                region = marioStand;
+                break;
+        }
+
+        if((b2Body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
+            region.flip(true, false);
+            runningRight = false;
+        } else if((b2Body.getLinearVelocity().x > 0 || runningRight) && region.isFlipX()) {
+            region.flip(true, false);
+            runningRight = true;
+        }
+
+        stateTimer = currentState == previousState ? stateTimer + dt : 0;
+        previousState = currentState;
+        return region;
+    }
+
+    /**
+     * Gets the current state the player character is in.
+     *
+     * @return  the current state
+     * @see     Body#getLinearVelocity()
+     */
+    public State getState() {
+        if(b2Body.getLinearVelocity().y > 0
+                || (b2Body.getLinearVelocity().y < 0 && previousState == State.JUMPING)) {
+            return State.JUMPING;
+        }
+        if(b2Body.getLinearVelocity().y < 0) {
+            return State.FALLING;
+        }
+        if(b2Body.getLinearVelocity().x != 0) {
+            return State.RUNNING;
+        }
+        return State.STANDING;
     }
 
     /**
@@ -68,17 +172,5 @@ public class Mario extends Sprite {
 
         fDef.shape = shape;
         b2Body.createFixture(fDef);
-    }
-
-    /**
-     * Updates the player character based on the time passed since the ast update.
-     *
-     * @param dt    the time since the last update
-     * @see         Sprite#setPosition(float, float)
-     */
-    public void update(float dt) {
-        setPosition(
-                b2Body.getPosition().x - getWidth() / 2,
-                b2Body.getPosition().y - getHeight() / 2);
     }
 }
