@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
@@ -73,7 +76,7 @@ public class Mario extends Sprite {
         marioStand = new TextureRegion(getTexture(), 1, 11, 16, 16);
 
         defineMario();
-        setBounds(0, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
+        setBounds(1, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
         setRegion(marioStand);
     }
 
@@ -168,9 +171,17 @@ public class Mario extends Sprite {
 
         FixtureDef fDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(7.5f / MarioBros.PPM);
+        shape.setRadius(6 / MarioBros.PPM);
 
         fDef.shape = shape;
         b2Body.createFixture(fDef);
+
+        // Additional shape to act as the characters feet. this avoids the issue of a jump animation
+        // trigger if the character walks over a connection between game objects.
+        FixtureDef fDef2 = new FixtureDef();
+        EdgeShape feet = new EdgeShape();
+        feet.set(new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
+        fDef2.shape = feet;
+        b2Body.createFixture(fDef2);
     }
 }
