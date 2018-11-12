@@ -9,6 +9,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -16,13 +17,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -37,7 +33,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class PlayScreen implements Screen {
 
+    // Game
     private MarioBros game;
+    private TextureAtlas atlas;
+
+    // Play screen
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private Hud hud;
@@ -69,6 +69,8 @@ public class PlayScreen implements Screen {
      */
     public PlayScreen(MarioBros game) {
         this.game = game;
+        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(
                 MarioBros.V_WIDTH / MarioBros.PPM,
@@ -90,7 +92,7 @@ public class PlayScreen implements Screen {
 
         new B2WorldCreator(world, map);
 
-        player = new Mario(world);
+        player = new Mario(world, this);
     }
 
     /**
@@ -128,17 +130,31 @@ public class PlayScreen implements Screen {
      * This represents the update part of the game cycle.
      *
      * @param dt    the time passed
+     * @see         World#step(float, int, int) 
      * @see         OrthographicCamera#update()
      * @see         OrthogonalTiledMapRenderer#setView(OrthographicCamera)
+     * @see         Mario#update(float)
      */
     public void update(float dt) {
         handleInput(dt);
 
         world.step(1/60f, 6, 2);
+
+        player.update(dt);
+
         gameCam.position.x = player.b2Body.getPosition().x;
 
         gameCam.update();
         renderer.setView(gameCam);
+    }
+
+    /**
+     * Gets the texture atlas.
+     *
+     * @see TextureAtlas
+     */
+    public TextureAtlas getTextureAtlas() {
+        return atlas;
     }
 
     @Override
@@ -164,7 +180,13 @@ public class PlayScreen implements Screen {
 
         renderer.render();
 
+        // render Box2DDebugLines
         b2dr.render(world, gameCam.combined);
+
+        game.batch.setProjectionMatrix(gameCam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();

@@ -1,7 +1,10 @@
 package com.andrejlohn.mariobros.sprites;
 
 import com.andrejlohn.mariobros.MarioBros;
+import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -19,17 +22,26 @@ public class Mario extends Sprite {
 
     public World world;
     public Body b2Body;
+    private TextureRegion marioStand;
 
     /**
      * Creates the player character within the game world.
      *
      * @param world the game world
-     * @see         World
      * @see         #defineMario()
+     * @see         World
+     * @see         TextureRegion
+     * @see         com.badlogic.gdx.graphics.g2d.TextureAtlas#findRegion(String)
+     * @see         Sprite#setBounds(float, float, float, float)
+     * @see         Sprite#setRegion(Texture)
      */
-    public Mario(World world) {
+    public Mario(World world, PlayScreen screen) {
+        super(screen.getTextureAtlas().findRegion("little_mario"));
         this.world = world;
         defineMario();
+        marioStand = new TextureRegion(getTexture(), 1, 11, 16, 16);
+        setBounds(0, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
+        setRegion(marioStand);
     }
 
     /**
@@ -52,9 +64,21 @@ public class Mario extends Sprite {
 
         FixtureDef fDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MarioBros.PPM);
+        shape.setRadius(7.5f / MarioBros.PPM);
 
         fDef.shape = shape;
         b2Body.createFixture(fDef);
+    }
+
+    /**
+     * Updates the player character based on the time passed since the ast update.
+     *
+     * @param dt    the time since the last update
+     * @see         Sprite#setPosition(float, float)
+     */
+    public void update(float dt) {
+        setPosition(
+                b2Body.getPosition().x - getWidth() / 2,
+                b2Body.getPosition().y - getHeight() / 2);
     }
 }
