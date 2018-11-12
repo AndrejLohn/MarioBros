@@ -1,6 +1,7 @@
 package com.andrejlohn.mariobros.sprites;
 
 import com.andrejlohn.mariobros.MarioBros;
+import com.andrejlohn.mariobros.scenes.Hud;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -37,5 +38,6 @@ public class Brick extends InteractiveTileObject {
         Gdx.app.log("Brick", "Collision");
         setCategoryFilter(MarioBros.DESTROYED_BIT);
         getCell().setTile(null);
+        Hud.addScore(200);
     }
 }

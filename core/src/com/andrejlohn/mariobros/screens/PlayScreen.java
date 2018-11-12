@@ -107,10 +107,12 @@ public class PlayScreen implements Screen {
      */
     public void handleInput(float dt) {
         if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            player.b2Body.applyLinearImpulse(
-                    new Vector2(0, 4f),
-                    player.b2Body.getWorldCenter(),
-                    true);
+            if(player.b2Body.getLinearVelocity().y == 0) {
+                player.b2Body.applyLinearImpulse(
+                        new Vector2(0, 4f),
+                        player.b2Body.getWorldCenter(),
+                        true);
+            }
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
@@ -144,6 +146,7 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         player.update(dt);
+        hud.update(dt);
 
         gameCam.position.x = player.b2Body.getPosition().x;
 
