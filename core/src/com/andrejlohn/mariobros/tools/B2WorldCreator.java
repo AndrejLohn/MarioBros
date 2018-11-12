@@ -78,6 +78,7 @@ public class B2WorldCreator {
                     (rect.getWidth() / 2) / MarioBros.PPM,
                     (rect.getHeight() / 2) / MarioBros.PPM);
             fDef.shape = shape;
+            fDef.filter.categoryBits = MarioBros.OBJECT_BIT;
             body.createFixture(fDef);
         }
 
