@@ -4,6 +4,7 @@ import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.tools.B2WorldCreator;
+import com.andrejlohn.mariobros.tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -93,6 +94,8 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(world, map);
 
         player = new Mario(world, this);
+
+        world.setContactListener(new WorldContactListener());
     }
 
     /**

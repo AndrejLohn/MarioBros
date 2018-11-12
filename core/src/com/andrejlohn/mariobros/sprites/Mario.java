@@ -180,8 +180,18 @@ public class Mario extends Sprite {
         // trigger if the character walks over a connection between game objects.
         FixtureDef fDef2 = new FixtureDef();
         EdgeShape feet = new EdgeShape();
-        feet.set(new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
+        feet.set(
+                new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM),
+                new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
         fDef2.shape = feet;
         b2Body.createFixture(fDef2);
+
+        EdgeShape head = new EdgeShape();
+        head.set(
+                new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM),
+                new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        fDef.shape = head;
+        fDef.isSensor = true;
+        b2Body.createFixture(fDef).setUserData("head");
     }
 }
