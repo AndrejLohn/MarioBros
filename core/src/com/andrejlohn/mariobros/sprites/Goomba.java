@@ -3,6 +3,7 @@ package com.andrejlohn.mariobros.sprites;
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -50,7 +51,9 @@ public class Goomba extends Enemy {
                     0,
                     16,
                     16));
+            stateTime = 0;
         } else if(!destroyed) {
+            b2Body.setLinearVelocity(velocity);
             setPosition(
                     b2Body.getPosition().x - getWidth() / 2,
                     b2Body.getPosition().y - getHeight() / 2);
@@ -77,7 +80,7 @@ public class Goomba extends Enemy {
                 MarioBros.MARIO_BIT;
 
         fDef.shape = shape;
-        b2Body.createFixture(fDef);
+        b2Body.createFixture(fDef).setUserData(this);
 
         // Create the Head
         PolygonShape head = new PolygonShape();
@@ -92,6 +95,12 @@ public class Goomba extends Enemy {
         fDef.restitution = 0.5f;
         fDef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
         b2Body.createFixture(fDef).setUserData(this);
+    }
+
+    public void draw(Batch batch) {
+        if(!destroyed || stateTime < 1) {
+            super.draw(batch);
+        }
     }
 
     @Override

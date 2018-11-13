@@ -86,7 +86,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1_simple.tmx");
+        map = mapLoader.load("level1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
         gameCam.position.set(
                 gamePort.getWorldWidth() / 2,
@@ -106,7 +106,8 @@ public class PlayScreen implements Screen {
         music.setLooping(true);
         music.play();
 
-        goomba = new Goomba(this, 16 * 8 / MarioBros.PPM + .08f, .32f);
+        //goomba = new Goomba(this, 16 * 8 / MarioBros.PPM + .08f, .32f);
+        goomba = new Goomba(this, 5.64f, .16f);
     }
 
     /**
