@@ -2,8 +2,7 @@ package com.andrejlohn.mariobros.screens;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
-import com.andrejlohn.mariobros.sprites.Enemy;
-import com.andrejlohn.mariobros.sprites.Goomba;
+import com.andrejlohn.mariobros.sprites.enemies.Enemy;
 import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.tools.B2WorldCreator;
 import com.andrejlohn.mariobros.tools.WorldContactListener;
@@ -157,6 +156,10 @@ public class PlayScreen implements Screen {
         player.update(dt);
         for(Enemy enemy: creator.getGoombas()) {
             enemy.update(dt);
+            // Activate enemies only when they are at most 2 tiles away from the screen edge
+            if(enemy.getX() < player.getX() + (((12 + 2) * 16) / MarioBros.PPM)) {
+                enemy.b2Body.setActive(true);
+            }
         }
         hud.update(dt);
 

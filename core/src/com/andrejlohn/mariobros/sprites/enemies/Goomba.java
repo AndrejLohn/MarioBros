@@ -1,4 +1,4 @@
-package com.andrejlohn.mariobros.sprites;
+package com.andrejlohn.mariobros.sprites.enemies;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;

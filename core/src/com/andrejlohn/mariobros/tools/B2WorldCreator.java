@@ -2,9 +2,9 @@ package com.andrejlohn.mariobros.tools;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
-import com.andrejlohn.mariobros.sprites.Brick;
-import com.andrejlohn.mariobros.sprites.Coin;
-import com.andrejlohn.mariobros.sprites.Goomba;
+import com.andrejlohn.mariobros.sprites.tileobjects.Brick;
+import com.andrejlohn.mariobros.sprites.tileobjects.Coin;
+import com.andrejlohn.mariobros.sprites.enemies.Goomba;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;

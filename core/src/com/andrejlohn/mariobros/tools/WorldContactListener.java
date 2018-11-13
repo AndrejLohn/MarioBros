@@ -1,8 +1,8 @@
 package com.andrejlohn.mariobros.tools;
 
 import com.andrejlohn.mariobros.MarioBros;
-import com.andrejlohn.mariobros.sprites.Enemy;
-import com.andrejlohn.mariobros.sprites.InteractiveTileObject;
+import com.andrejlohn.mariobros.sprites.enemies.Enemy;
+import com.andrejlohn.mariobros.sprites.tileobjects.InteractiveTileObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
