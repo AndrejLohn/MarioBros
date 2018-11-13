@@ -2,6 +2,7 @@ package com.andrejlohn.mariobros.screens;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
+import com.andrejlohn.mariobros.sprites.Enemy;
 import com.andrejlohn.mariobros.sprites.Goomba;
 import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.tools.B2WorldCreator;
@@ -51,14 +52,13 @@ public class PlayScreen implements Screen {
     // Box2D
     private World world;
     private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
 
     // Character
     private Mario player;
 
     // Music
     private Music music;
-
-    private Goomba goomba;
 
 
     /**
@@ -96,7 +96,7 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 
-        new B2WorldCreator(this);
+        creator = new B2WorldCreator(this);
 
         player = new Mario(this);
 
@@ -105,9 +105,6 @@ public class PlayScreen implements Screen {
         music = MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class);
         music.setLooping(true);
         music.play();
-
-        //goomba = new Goomba(this, 16 * 8 / MarioBros.PPM + .08f, .32f);
-        goomba = new Goomba(this, 5.64f, .16f);
     }
 
     /**
@@ -158,7 +155,9 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         player.update(dt);
-        goomba.update(dt);
+        for(Enemy enemy: creator.getGoombas()) {
+            enemy.update(dt);
+        }
         hud.update(dt);
 
         gameCam.position.x = player.b2Body.getPosition().x;
@@ -223,7 +222,9 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
-        goomba.draw(game.batch);
+        for(Enemy enemy: creator.getGoombas()) {
+            enemy.draw(game.batch);
+        }
         game.batch.end();
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);

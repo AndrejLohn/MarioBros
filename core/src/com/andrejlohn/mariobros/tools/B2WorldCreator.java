@@ -4,6 +4,7 @@ import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Brick;
 import com.andrejlohn.mariobros.sprites.Coin;
+import com.andrejlohn.mariobros.sprites.Goomba;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * This class generates the game world from a given Box2D world and a tiled map.
@@ -20,6 +22,8 @@ import com.badlogic.gdx.physics.box2d.World;
  * @version %I%, %G%
  */
 public class B2WorldCreator {
+
+    private Array<Goomba> goombas;
 
     /**
      * Creates the game world. Sets up all map objects (ground, pipes, boxes, coins).
@@ -97,5 +101,27 @@ public class B2WorldCreator {
 
             new Coin(screen, rect);
         }
+
+        // Create Goombas
+        goombas = new Array<Goomba>();
+        for(MapObject object:
+                map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            goombas.add(
+                    new Goomba(
+                            screen,
+                            rect.getX() / MarioBros.PPM,
+                            rect.getY() / MarioBros.PPM));
+        }
+    }
+
+    /**
+     * Gets the array of all Goombas in the game world.
+     *
+     * @return  the array of Goombas
+     */
+    public Array<Goomba> getGoombas() {
+        return goombas;
     }
 }
