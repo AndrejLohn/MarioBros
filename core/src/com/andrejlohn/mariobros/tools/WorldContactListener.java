@@ -1,5 +1,7 @@
 package com.andrejlohn.mariobros.tools;
 
+import com.andrejlohn.mariobros.MarioBros;
+import com.andrejlohn.mariobros.sprites.Enemy;
 import com.andrejlohn.mariobros.sprites.InteractiveTileObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -29,6 +31,8 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
+        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+
         if("head".equals(fixA.getUserData()) || "head".equals(fixB.getUserData())) {
             Fixture head = fixA.getUserData() == "head" ? fixA : fixB;
             Fixture object = head == fixA ? fixB : fixA;
@@ -36,6 +40,15 @@ public class WorldContactListener implements ContactListener {
             if(object.getUserData() instanceof InteractiveTileObject) {
                 ((InteractiveTileObject) object.getUserData()).onHeadHit();
             }
+        }
+
+        switch(cDef) {
+            case MarioBros.ENEMY_HEAD_BIT | MarioBros.MARIO_BIT:
+                if(fixA.getFilterData().categoryBits == MarioBros.ENEMY_HEAD_BIT) {
+                    ((Enemy) fixA.getUserData()).hitOnHead();
+                } else if(fixB.getFilterData().categoryBits == MarioBros.ENEMY_HEAD_BIT) {
+                    ((Enemy) fixB.getUserData()).hitOnHead();
+                }
         }
     }
 

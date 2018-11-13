@@ -165,7 +165,7 @@ public class Mario extends Sprite {
      */
     public void defineMario() {
         BodyDef bDef = new BodyDef();
-        bDef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM);
+        bDef.position.set((16 * 7 + 8) / MarioBros.PPM, 32 / MarioBros.PPM);
         bDef.type = BodyDef.BodyType.DynamicBody;
         b2Body = world.createBody(bDef);
 
@@ -177,7 +177,8 @@ public class Mario extends Sprite {
                 MarioBros.BRICK_BIT |
                 MarioBros.COIN_BIT |
                 MarioBros.ENEMY_BIT |
-                MarioBros.OBJECT_BIT;
+                MarioBros.OBJECT_BIT |
+                MarioBros.ENEMY_HEAD_BIT;
 
         fDef.shape = shape;
         b2Body.createFixture(fDef);

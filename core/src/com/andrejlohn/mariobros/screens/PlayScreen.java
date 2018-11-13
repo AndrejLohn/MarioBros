@@ -106,7 +106,7 @@ public class PlayScreen implements Screen {
         music.setLooping(true);
         music.play();
 
-        goomba = new Goomba(this, .32f, .32f);
+        goomba = new Goomba(this, 16 * 8 / MarioBros.PPM + .08f, .32f);
     }
 
     /**
