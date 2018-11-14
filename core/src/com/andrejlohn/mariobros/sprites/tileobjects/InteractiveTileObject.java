@@ -25,6 +25,7 @@ public abstract class InteractiveTileObject {
     protected Rectangle bounds;
     protected Body body;
     protected Fixture fixture;
+    protected PlayScreen screen;
 
     /**
      * Creates the interactive game world object.
@@ -35,6 +36,7 @@ public abstract class InteractiveTileObject {
      * @see             Rectangle
      */
     public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
+        this.screen = screen;
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.bounds = bounds;

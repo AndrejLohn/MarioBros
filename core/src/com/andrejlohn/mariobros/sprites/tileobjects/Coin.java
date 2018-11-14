@@ -3,10 +3,13 @@ package com.andrejlohn.mariobros.sprites.tileobjects;
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.items.ItemDef;
+import com.andrejlohn.mariobros.sprites.items.Mushroom;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * This class represents an interactive coin block in the game world. When the player character
@@ -49,6 +52,12 @@ public class Coin extends InteractiveTileObject {
             MarioBros.manager.get("audio/sounds/smb_coin.wav", Sound.class).play();
             Hud.addScore(1000);
             getCell().setTile(tileSet.getTile(BLANK_COIN));
+            screen.spawnItem(
+                    new ItemDef(
+                            new Vector2(
+                                    body.getPosition().x,
+                                    body.getPosition().y + 16 / MarioBros.PPM),
+                            Mushroom.class));
         }
     }
 }

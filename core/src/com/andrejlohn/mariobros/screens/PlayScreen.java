@@ -4,6 +4,9 @@ import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.sprites.enemies.Enemy;
 import com.andrejlohn.mariobros.sprites.Mario;
+import com.andrejlohn.mariobros.sprites.items.Item;
+import com.andrejlohn.mariobros.sprites.items.ItemDef;
+import com.andrejlohn.mariobros.sprites.items.Mushroom;
 import com.andrejlohn.mariobros.tools.B2WorldCreator;
 import com.andrejlohn.mariobros.tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
@@ -21,8 +24,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This class represents the game screen in a running game. It implements the libGDX Screen
@@ -53,8 +59,10 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
     private B2WorldCreator creator;
 
-    // Character
+    // Sprites
     private Mario player;
+    private Array<Item> items;
+    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
 
     // Music
     private Music music;
@@ -104,6 +112,22 @@ public class PlayScreen implements Screen {
         music = MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class);
         music.setLooping(true);
         music.play();
+
+        items = new Array<Item>();
+        itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
+    }
+
+    public void spawnItem(ItemDef iDef) {
+        itemsToSpawn.add(iDef);
+    }
+
+    public void handleSpawningItems() {
+        if(!itemsToSpawn.isEmpty()) {
+            ItemDef iDef = itemsToSpawn.poll();
+            if(iDef.type == Mushroom.class) {
+                items.add(new Mushroom(this, iDef.position.x, iDef.position.y));
+            }
+        }
     }
 
     /**
@@ -150,17 +174,25 @@ public class PlayScreen implements Screen {
      */
     public void update(float dt) {
         handleInput(dt);
+        handleSpawningItems();
 
         world.step(1/60f, 6, 2);
 
         player.update(dt);
         for(Enemy enemy: creator.getGoombas()) {
-            enemy.update(dt);
             // Activate enemies only when they are at most 2 tiles away from the screen edge
-            if(enemy.getX() < player.getX() + (((12 + 2) * 16) / MarioBros.PPM)) {
+            // (12+2)*16 = 224
+            //TODO check if enemy deactivation is necessary
+            if(enemy.getX() < player.getX() + 224 / MarioBros.PPM) {
                 enemy.b2Body.setActive(true);
             }
+            enemy.update(dt);
         }
+
+        for(Item item: items) {
+            item.update(dt);
+        }
+
         hud.update(dt);
 
         gameCam.position.x = player.b2Body.getPosition().x;
@@ -227,6 +259,9 @@ public class PlayScreen implements Screen {
         player.draw(game.batch);
         for(Enemy enemy: creator.getGoombas()) {
             enemy.draw(game.batch);
+        }
+        for(Item item: items) {
+            item.draw(game.batch);
         }
         game.batch.end();
 
