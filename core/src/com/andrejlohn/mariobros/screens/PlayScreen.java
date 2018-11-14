@@ -138,27 +138,36 @@ public class PlayScreen implements Screen {
      * @see         OrthographicCamera#position
      */
     public void handleInput(float dt) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            if(player.b2Body.getLinearVelocity().y == 0) {
+        if(player.currentState != Mario.State.DEAD) {
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+
+                if (player.b2Body.getLinearVelocity().y == 0) {
+
+                    player.b2Body.applyLinearImpulse(
+                            new Vector2(0, 4f),
+                            player.b2Body.getWorldCenter(),
+                            true);
+                }
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) &&
+                    player.b2Body.getLinearVelocity().x <= 2) {
+
                 player.b2Body.applyLinearImpulse(
-                        new Vector2(0, 4f),
+                        new Vector2(0.1f, 0),
                         player.b2Body.getWorldCenter(),
                         true);
             }
-        }
 
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2Body.getLinearVelocity().x <= 2) {
-            player.b2Body.applyLinearImpulse(
-                    new Vector2(0.1f, 0),
-                    player.b2Body.getWorldCenter(),
-                    true);
-        }
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) &&
+                    player.b2Body.getLinearVelocity().x >= -2) {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2Body.getLinearVelocity().x >= -2) {
-            player.b2Body.applyLinearImpulse(
-                    new Vector2(-0.1f, 0),
-                    player.b2Body.getWorldCenter(),
-                    true);
+                player.b2Body.applyLinearImpulse(
+                        new Vector2(-0.1f, 0),
+                        player.b2Body.getWorldCenter(),
+                        true);
+            }
         }
     }
 
@@ -195,7 +204,9 @@ public class PlayScreen implements Screen {
 
         hud.update(dt);
 
-        gameCam.position.x = player.b2Body.getPosition().x;
+        if(player.currentState != Mario.State.DEAD) {
+            gameCam.position.x = player.b2Body.getPosition().x;
+        }
 
         gameCam.update();
         renderer.setView(gameCam);

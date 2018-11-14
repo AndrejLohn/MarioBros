@@ -21,6 +21,7 @@ public class MarioBros extends Game {
     public static final float PPM = 100;
 
     // Collision bits
+    public static final short NOTHING_BIT = 0;
     public static final short GROUND_BIT = 1;
     public static final short MARIO_BIT = 2;
     public static final short BRICK_BIT = 4;
