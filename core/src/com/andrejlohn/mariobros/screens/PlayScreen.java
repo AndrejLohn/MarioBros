@@ -111,7 +111,7 @@ public class PlayScreen implements Screen {
 
         music = MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class);
         music.setLooping(true);
-        music.play();
+        //music.play();
 
         items = new Array<Item>();
         itemsToSpawn = new LinkedBlockingQueue<ItemDef>();

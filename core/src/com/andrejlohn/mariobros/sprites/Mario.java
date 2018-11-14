@@ -45,6 +45,7 @@ public class Mario extends Sprite {
     private boolean isBig;
     private boolean runGrowAnimation;
     private boolean timeToDefineBigMario;
+    private boolean timeToRedefineMario;
 
     /**
      * Creates the player character within the game world. Sets up the move animations.
@@ -133,6 +134,10 @@ public class Mario extends Sprite {
         if(timeToDefineBigMario) {
             defineBigMario();
         }
+
+        if(timeToRedefineMario) {
+            redefineMario();
+        }
     }
 
     /**
@@ -211,7 +216,6 @@ public class Mario extends Sprite {
         isBig = true;
         timeToDefineBigMario = true;
         setBounds(getX(), getY(), getWidth(), getHeight() * 2);
-        MarioBros.manager.get("audio/sounds/smb_powerup.wav", Sound.class).play();
     }
 
     /**
@@ -322,5 +326,67 @@ public class Mario extends Sprite {
      */
     public boolean isBig() {
         return isBig;
+    }
+
+    /**
+     * Handles enemy hits on the player character.
+     */
+    public void hit() {
+        if(isBig) {
+            isBig = false;
+            timeToRedefineMario = true;
+            setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+            MarioBros.manager.get("audio/sounds/smb_pipe.wav", Sound.class).play();
+        } else {
+            MarioBros.manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
+        }
+    }
+
+    /**
+     * Turns the player character from big to small.
+     */
+    public void redefineMario() {
+        Vector2 position = b2Body.getPosition();
+        world.destroyBody(b2Body);
+
+        BodyDef bDef = new BodyDef();
+        bDef.position.set(position.x, position.y);
+        bDef.type = BodyDef.BodyType.DynamicBody;
+        b2Body = world.createBody(bDef);
+
+        FixtureDef fDef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(6 / MarioBros.PPM);
+        fDef.filter.categoryBits = MarioBros.MARIO_BIT;
+        fDef.filter.maskBits = MarioBros.GROUND_BIT |
+                MarioBros.BRICK_BIT |
+                MarioBros.COIN_BIT |
+                MarioBros.ENEMY_BIT |
+                MarioBros.OBJECT_BIT |
+                MarioBros.ENEMY_HEAD_BIT |
+                MarioBros.ITEM_BIT;
+
+        fDef.shape = shape;
+        b2Body.createFixture(fDef).setUserData(this);
+
+        // Additional shape to act as the characters feet. this avoids the issue of a jump animation
+        // trigger if the character walks over a connection between game objects.
+        EdgeShape feet = new EdgeShape();
+        feet.set(
+                new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM),
+                new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
+        fDef.shape = feet;
+        b2Body.createFixture(fDef);
+
+        EdgeShape head = new EdgeShape();
+        head.set(
+                new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM),
+                new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        fDef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
+        fDef.shape = head;
+        fDef.isSensor = true;
+        b2Body.createFixture(fDef).setUserData(this);
+
+        timeToRedefineMario = false;
     }
 }
