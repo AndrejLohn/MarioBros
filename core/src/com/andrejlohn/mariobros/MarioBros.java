@@ -54,6 +54,7 @@ public class MarioBros extends Game {
         manager.load("audio/sounds/smb_coin.wav", Sound.class);
         manager.load("audio/sounds/smb_bump.wav", Sound.class);
         manager.load("audio/sounds/smb_breakblock.wav", Sound.class);
+        manager.load("audio/sounds/smb_powerup_appears.wav", Sound.class);
         manager.finishLoading();
 
 		setScreen(new PlayScreen(this));

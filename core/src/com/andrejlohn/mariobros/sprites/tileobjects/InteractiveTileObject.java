@@ -2,6 +2,8 @@ package com.andrejlohn.mariobros.sprites.tileobjects;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -26,20 +28,22 @@ public abstract class InteractiveTileObject {
     protected Body body;
     protected Fixture fixture;
     protected PlayScreen screen;
+    protected MapObject object;
 
     /**
      * Creates the interactive game world object.
      *
      * @param screen    the play screen
-     * @param bounds    this objects bounding box
+     * @param object    the map object
      * @see             PlayScreen
      * @see             Rectangle
      */
-    public InteractiveTileObject(PlayScreen screen, Rectangle bounds) {
+    public InteractiveTileObject(PlayScreen screen, MapObject object) {
+        this.object = object;
         this.screen = screen;
         this.world = screen.getWorld();
         this.map = screen.getMap();
-        this.bounds = bounds;
+        this.bounds = ((RectangleMapObject) object).getRectangle();
 
         BodyDef bDef = new BodyDef();
         FixtureDef fDef = new FixtureDef();

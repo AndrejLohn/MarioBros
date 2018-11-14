@@ -5,6 +5,7 @@ import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -20,12 +21,12 @@ public class Brick extends InteractiveTileObject {
      * Creates the brick.
      *
      * @param screen    the play screen
-     * @param bounds    this bricks bounding box
+     * @param object    the map object
      * @see             PlayScreen
      * @see             Rectangle
      */
-    public Brick(PlayScreen screen, Rectangle bounds) {
-        super(screen, bounds);
+    public Brick(PlayScreen screen, MapObject object) {
+        super(screen, object);
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.BRICK_BIT);
     }
