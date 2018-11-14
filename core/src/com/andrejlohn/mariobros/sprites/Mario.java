@@ -2,6 +2,7 @@ package com.andrejlohn.mariobros.sprites;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -24,7 +25,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Mario extends Sprite {
 
-    public enum State { FALLING, JUMPING, STANDING, RUNNING };
+    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING };
     public State currentState;
     public State previousState;
 
@@ -32,10 +33,17 @@ public class Mario extends Sprite {
     public Body b2Body;
 
     private TextureRegion marioStand;
+    private TextureRegion marioJump;
     private Animation<TextureRegion> marioRun;
-    private Animation<TextureRegion> marioJump;
-    private boolean runningRight;
+    private TextureRegion bigMarioStand;
+    private TextureRegion bigMarioJump;
+    private Animation<TextureRegion> bigMarioRun;
+    private Animation<TextureRegion> growMario;
+
     private float stateTimer;
+    private boolean runningRight;
+    private boolean isBig;
+    private boolean runGrowAnimation;
 
     /**
      * Creates the player character within the game world. Sets up the move animations.
@@ -50,7 +58,6 @@ public class Mario extends Sprite {
      * @see             Sprite#setRegion(Texture)
      */
     public Mario(PlayScreen screen) {
-        super(screen.getTextureAtlas().findRegion("little_mario"));
         this.world = screen.getWorld();
 
         currentState = State.STANDING;
@@ -58,22 +65,45 @@ public class Mario extends Sprite {
         stateTimer = 0;
         runningRight = true;
 
-        // Set up the run animation
+        // Set up the run animations
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for(int i=1; i<4; i++){
-            frames.add(new TextureRegion(getTexture(), 1 + i * 16, 11, 16, 16));
+            frames.add(new TextureRegion(screen.getTextureAtlas()
+                    .findRegion("little_mario"), i * 16, 0, 16, 16));
         }
         marioRun = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
-        // Set up the jump animation
-        for(int i=4; i<6; i++){
-            frames.add(new TextureRegion(getTexture(), 1 + i * 16, 11, 16, 16));
+        for(int i=1; i<4; i++){
+            frames.add(new TextureRegion(screen.getTextureAtlas()
+                    .findRegion("big_mario"), i * 16, 0, 16, 32));
         }
-        marioJump = new Animation<TextureRegion>(0.1f, frames);
+        bigMarioRun = new Animation<TextureRegion>(0.1f, frames);
         frames.clear();
 
-        marioStand = new TextureRegion(getTexture(), 1, 11, 16, 16);
+        // Set up the grow animation
+        frames.add(new TextureRegion(screen.getTextureAtlas()
+                .findRegion("big_mario"), 240, 0, 16, 32));
+        frames.add(new TextureRegion(screen.getTextureAtlas()
+                .findRegion("big_mario"), 0, 0, 16, 32));
+        frames.add(new TextureRegion(screen.getTextureAtlas()
+                .findRegion("big_mario"), 240, 0, 16, 32));
+        frames.add(new TextureRegion(screen.getTextureAtlas()
+                .findRegion("big_mario"), 0, 0, 16, 32));
+        growMario = new Animation<TextureRegion>(0.2f, frames);
+        frames.clear();
+
+        // Set up the jump animations
+        marioJump = new TextureRegion(screen.getTextureAtlas()
+                .findRegion("little_mario"), 80, 0, 16, 16);
+        bigMarioJump = new TextureRegion(screen.getTextureAtlas()
+                .findRegion("big_mario"), 80, 0, 16, 32);
+
+        // Set the stand textures
+        marioStand = new TextureRegion(screen.getTextureAtlas()
+                .findRegion("little_mario"), 0, 0, 16, 16);
+        bigMarioStand = new TextureRegion(screen.getTextureAtlas()
+                .findRegion("big_mario"), 0, 0, 16, 32);
 
         defineMario();
         setBounds(1, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
@@ -105,16 +135,24 @@ public class Mario extends Sprite {
         TextureRegion region;
 
         switch(currentState) {
+            case GROWING:
+                region = growMario.getKeyFrame(stateTimer);
+                if(growMario.isAnimationFinished(stateTimer)) {
+                    runGrowAnimation = false;
+                }
+                break;
             case JUMPING:
-                region = marioJump.getKeyFrame(stateTimer);
+                region = isBig ? bigMarioJump : marioJump;
                 break;
             case RUNNING:
-                region = marioRun.getKeyFrame(stateTimer, true);
+                region = isBig ?
+                        bigMarioRun.getKeyFrame(stateTimer, true) :
+                        marioRun.getKeyFrame(stateTimer, true);
                 break;
             case FALLING:
             case STANDING:
             default:
-                region = marioStand;
+                region = isBig ? bigMarioStand : marioStand;
                 break;
         }
 
@@ -138,6 +176,9 @@ public class Mario extends Sprite {
      * @see     Body#getLinearVelocity()
      */
     public State getState() {
+        if(runGrowAnimation) {
+            return State.GROWING;
+        }
         if(b2Body.getLinearVelocity().y > 0
                 || (b2Body.getLinearVelocity().y < 0 && previousState == State.JUMPING)) {
             return State.JUMPING;
@@ -149,6 +190,16 @@ public class Mario extends Sprite {
             return State.RUNNING;
         }
         return State.STANDING;
+    }
+
+    /**
+     * Grows the player character to its large size. Enlarges the bounding box.
+     */
+    public void grow() {
+        runGrowAnimation = true;
+        isBig = true;
+        setBounds(getX(), getY(), getWidth(), getHeight() * 2);
+        MarioBros.manager.get("audio/sounds/smb_powerup.wav", Sound.class).play();
     }
 
     /**
@@ -182,7 +233,7 @@ public class Mario extends Sprite {
                 MarioBros.ITEM_BIT;
 
         fDef.shape = shape;
-        b2Body.createFixture(fDef);
+        b2Body.createFixture(fDef).setUserData(this);
 
         // Additional shape to act as the characters feet. this avoids the issue of a jump animation
         // trigger if the character walks over a connection between game objects.
