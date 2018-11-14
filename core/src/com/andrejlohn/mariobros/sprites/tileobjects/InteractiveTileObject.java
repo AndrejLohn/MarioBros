@@ -2,6 +2,7 @@ package com.andrejlohn.mariobros.sprites.tileobjects;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.Mario;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -66,7 +67,7 @@ public abstract class InteractiveTileObject {
     /**
      * Offers the functionality to react to a collision with the player characters head.
      */
-    public abstract void onHeadHit();
+    public abstract void onHeadHit(Mario mario);
 
     /**
      * Sets the collision filter based on a given filter bit.

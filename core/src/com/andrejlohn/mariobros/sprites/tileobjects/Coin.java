@@ -3,6 +3,7 @@ package com.andrejlohn.mariobros.sprites.tileobjects;
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.sprites.items.ItemDef;
 import com.andrejlohn.mariobros.sprites.items.Mushroom;
 import com.badlogic.gdx.Gdx;
@@ -45,7 +46,7 @@ public class Coin extends InteractiveTileObject {
      * On hit this coin is blanked and a sound is played.
      */
     @Override
-    public void onHeadHit() {
+    public void onHeadHit(Mario mario) {
         Gdx.app.log("Coin", "Collision");
         if (getCell().getTile().getId() == BLANK_COIN) {
             MarioBros.manager.get("audio/sounds/smb_bump.wav", Sound.class).play();

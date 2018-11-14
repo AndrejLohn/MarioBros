@@ -3,6 +3,7 @@ package com.andrejlohn.mariobros.sprites.tileobjects;
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.Mario;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.MapObject;
@@ -36,11 +37,15 @@ public class Brick extends InteractiveTileObject {
      * On hit this brick is destroyed and a sound is played.
      */
     @Override
-    public void onHeadHit() {
-        Gdx.app.log("Brick", "Collision");
-        setCategoryFilter(MarioBros.DESTROYED_BIT);
-        getCell().setTile(null);
-        Hud.addScore(200);
-        MarioBros.manager.get("audio/sounds/smb_breakblock.wav", Sound.class).play();
+    public void onHeadHit(Mario mario) {
+        if(mario.isBig()) {
+            Gdx.app.log("Brick", "Collision");
+            setCategoryFilter(MarioBros.DESTROYED_BIT);
+            getCell().setTile(null);
+            Hud.addScore(200);
+            MarioBros.manager.get("audio/sounds/smb_breakblock.wav", Sound.class).play();
+        } else {
+            MarioBros.manager.get("audio/sounds/smb_bump.wav", Sound.class).play();
+        }
     }
 }

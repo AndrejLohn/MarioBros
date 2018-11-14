@@ -44,6 +44,7 @@ public class Mario extends Sprite {
     private boolean runningRight;
     private boolean isBig;
     private boolean runGrowAnimation;
+    private boolean timeToDefineBigMario;
 
     /**
      * Creates the player character within the game world. Sets up the move animations.
@@ -117,11 +118,21 @@ public class Mario extends Sprite {
      * @see         Sprite#setPosition(float, float)
      */
     public void update(float dt) {
-        setPosition(
-                b2Body.getPosition().x - getWidth() / 2,
-                b2Body.getPosition().y - getHeight() / 2);
+        if(isBig) {
+            setPosition(
+                    b2Body.getPosition().x - getWidth() / 2,
+                    b2Body.getPosition().y - getHeight() / 2 - 6 / MarioBros.PPM);
+        } else {
+            setPosition(
+                    b2Body.getPosition().x - getWidth() / 2,
+                    b2Body.getPosition().y - getHeight() / 2);
+        }
 
         setRegion(getFrame(dt));
+
+        if(timeToDefineBigMario) {
+            defineBigMario();
+        }
     }
 
     /**
@@ -198,6 +209,7 @@ public class Mario extends Sprite {
     public void grow() {
         runGrowAnimation = true;
         isBig = true;
+        timeToDefineBigMario = true;
         setBounds(getX(), getY(), getWidth(), getHeight() * 2);
         MarioBros.manager.get("audio/sounds/smb_powerup.wav", Sound.class).play();
     }
@@ -248,8 +260,67 @@ public class Mario extends Sprite {
         head.set(
                 new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM),
                 new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        fDef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
         fDef.shape = head;
         fDef.isSensor = true;
-        b2Body.createFixture(fDef).setUserData("head");
+        b2Body.createFixture(fDef).setUserData(this);
+    }
+
+    public void defineBigMario() {
+        Vector2 currentPosition = b2Body.getPosition();
+        world.destroyBody(b2Body);
+
+        BodyDef bDef = new BodyDef();
+        bDef.position.set(currentPosition.add(0, 10 / MarioBros.PPM));
+        bDef.type = BodyDef.BodyType.DynamicBody;
+        b2Body = world.createBody(bDef);
+
+        FixtureDef fDef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(6 / MarioBros.PPM);
+        fDef.filter.categoryBits = MarioBros.MARIO_BIT;
+        fDef.filter.maskBits = MarioBros.GROUND_BIT |
+                MarioBros.BRICK_BIT |
+                MarioBros.COIN_BIT |
+                MarioBros.ENEMY_BIT |
+                MarioBros.OBJECT_BIT |
+                MarioBros.ENEMY_HEAD_BIT |
+                MarioBros.ITEM_BIT;
+
+        fDef.shape = shape;
+        b2Body.createFixture(fDef).setUserData(this);
+        shape.setPosition(new Vector2(0, -14 / MarioBros.PPM));
+        b2Body.createFixture(fDef).setUserData(this);
+
+        // Additional shape to act as the characters feet. this avoids the issue of a jump animation
+        // trigger if the character walks over a connection between game objects.
+        EdgeShape feet = new EdgeShape();
+        feet.set(
+                new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM),
+                new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
+        fDef.shape = feet;
+        b2Body.createFixture(fDef);
+
+        EdgeShape head = new EdgeShape();
+        head.set(
+                new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM),
+                new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        fDef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
+        fDef.shape = head;
+        fDef.isSensor = true;
+        b2Body.createFixture(fDef).setUserData(this);
+
+        timeToDefineBigMario = false;
+    }
+
+
+    /**
+     * Gets the player characters size.
+     *
+     * @return  <code>true</code> if the character is big
+     *          <code>false</code> else
+     */
+    public boolean isBig() {
+        return isBig;
     }
 }
