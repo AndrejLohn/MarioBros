@@ -5,7 +5,6 @@ import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.sprites.enemies.Enemy;
 import com.andrejlohn.mariobros.sprites.items.Item;
 import com.andrejlohn.mariobros.sprites.tileobjects.InteractiveTileObject;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;

@@ -8,7 +8,9 @@ import com.andrejlohn.mariobros.sprites.items.Item;
 import com.andrejlohn.mariobros.sprites.items.ItemDef;
 import com.andrejlohn.mariobros.sprites.items.Mushroom;
 import com.andrejlohn.mariobros.tools.B2WorldCreator;
+import com.andrejlohn.mariobros.tools.Controller;
 import com.andrejlohn.mariobros.tools.WorldContactListener;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -67,6 +69,9 @@ public class PlayScreen implements Screen {
     // Music
     private Music music;
 
+    // Controller
+    private Controller controller;
+
 
     /**
      * Creates the PlayScreen for a running MarioBros game. Sets up the game camera, viewport, HUD
@@ -91,6 +96,7 @@ public class PlayScreen implements Screen {
                 gameCam);
 
         hud = new Hud(game.batch);
+        controller = new Controller(game);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1.tmx");
@@ -111,7 +117,7 @@ public class PlayScreen implements Screen {
 
         music = MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class);
         music.setLooping(true);
-        //music.play();
+        music.play();
 
         items = new Array<Item>();
         itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
@@ -140,9 +146,9 @@ public class PlayScreen implements Screen {
     public void handleInput(float dt) {
         if(player.currentState != Mario.State.DEAD) {
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            if(controller.isUpPressed()) {
 
-                if (player.b2Body.getLinearVelocity().y == 0) {
+                if(player.b2Body.getLinearVelocity().y == 0) {
 
                     player.b2Body.applyLinearImpulse(
                             new Vector2(0, 4f),
@@ -151,7 +157,7 @@ public class PlayScreen implements Screen {
                 }
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) &&
+            if(controller.isRightPressed() &&
                     player.b2Body.getLinearVelocity().x <= 2) {
 
                 player.b2Body.applyLinearImpulse(
@@ -160,7 +166,7 @@ public class PlayScreen implements Screen {
                         true);
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) &&
+            if(controller.isLeftPressed() &&
                     player.b2Body.getLinearVelocity().x >= -2) {
 
                 player.b2Body.applyLinearImpulse(
@@ -282,6 +288,10 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
+        if(Gdx.app.getType() == Application.ApplicationType.Android) {
+            controller.draw();
+        }
 
         if(gameOver()) {
             game.setScreen(new GameOverScreen(game));
