@@ -188,7 +188,7 @@ public class PlayScreen implements Screen {
         world.step(1/60f, 6, 2);
 
         player.update(dt);
-        for(Enemy enemy: creator.getGoombas()) {
+        for(Enemy enemy: creator.getEnemies()) {
             // Activate enemies only when they are at most 2 tiles away from the screen edge
             // (12+2)*16 = 224
             //TODO check if enemy deactivation is necessary
@@ -268,7 +268,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
-        for(Enemy enemy: creator.getGoombas()) {
+        for(Enemy enemy: creator.getEnemies()) {
             enemy.draw(game.batch);
         }
         for(Item item: items) {
