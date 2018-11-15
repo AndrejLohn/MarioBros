@@ -156,6 +156,15 @@ public class Goomba extends Enemy {
         }
     }
 
+    @Override
+    public void onEnemyHit(Enemy enemy) {
+        if(enemy instanceof Turtle && ((Turtle) enemy).currentState == Turtle.State.MOVING_SHELL) {
+            setToDestroy = true;
+        } else {
+            reverseVelocity(true, false);
+        }
+    }
+
     /**
      * Reatchs to the Goomba being stomped. Sets the Goomba to be destroyed in the next update
      * cycle.
