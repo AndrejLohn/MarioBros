@@ -415,4 +415,12 @@ public class Mario extends Sprite {
 
         timeToRedefineMario = false;
     }
+
+    public boolean isDead() {
+        return marioIsDead;
+    }
+
+    public float getStateTimer() {
+        return stateTimer;
+    }
 }
