@@ -1,6 +1,7 @@
 package com.andrejlohn.mariobros.sprites.enemies;
 
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.Mario;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -25,7 +26,7 @@ public abstract class Enemy extends Sprite {
 
     protected abstract void defineEnemy();
 
-    public abstract void hitOnHead();
+    public abstract void hitOnHead(Mario mario);
 
     public abstract void update(float dt);
 

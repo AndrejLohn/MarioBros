@@ -2,6 +2,7 @@ package com.andrejlohn.mariobros.sprites.enemies;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.Mario;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -13,13 +14,19 @@ import com.badlogic.gdx.utils.Array;
 
 public class Turtle extends Enemy {
 
-    public enum State { WALKING, SHELL}
+    public static final int KICK_LEFT_SPEED = -2;
+    public static final int KICK_RIGHT_SPEED = 2;
+
+    public enum State { WALKING, STANDING_SHELL, MOVING_SHELL}
+
     public State currentState;
     public State previousState;
     private float stateTime;
+
     private Animation<TextureRegion> walkAnimation;
     private TextureRegion shell;
     private Array<TextureRegion> frames;
+
     private boolean setToDestroy;
     private boolean destroyed;
 
@@ -46,7 +53,8 @@ public class Turtle extends Enemy {
         TextureRegion region;
 
         switch(currentState) {
-            case SHELL:
+            case STANDING_SHELL:
+            case MOVING_SHELL:
                 region = shell;
                 break;
             case WALKING:
@@ -66,6 +74,15 @@ public class Turtle extends Enemy {
         stateTime = currentState == previousState ? stateTime + dt : 0;
         previousState = currentState;
         return region;
+    }
+
+    public void kick(int speed) {
+        velocity.x = speed;
+        currentState = State.MOVING_SHELL;
+    }
+
+    public State getCurrentState() {
+        return currentState;
     }
 
     @Override
@@ -99,23 +116,25 @@ public class Turtle extends Enemy {
         head.set(vertices);
 
         fDef.shape = head;
-        fDef.restitution = 0.5f;
+        fDef.restitution = 1.5f;
         fDef.filter.categoryBits = MarioBros.ENEMY_HEAD_BIT;
         b2Body.createFixture(fDef).setUserData(this);
     }
 
     @Override
-    public void hitOnHead() {
-        if(currentState != State.SHELL) {
-            currentState = State.SHELL;
+    public void hitOnHead(Mario mario) {
+        if(currentState != State.STANDING_SHELL) {
+            currentState = State.STANDING_SHELL;
             velocity.x = 0;
+        } else {
+            kick(mario.getX() <= this.getX() ? KICK_RIGHT_SPEED : KICK_LEFT_SPEED);
         }
     }
 
     @Override
     public void update(float dt) {
         setRegion(getFrame(dt));
-        if(currentState == State.SHELL && stateTime > 5) {
+        if(currentState == State.STANDING_SHELL && stateTime > 5) {
             currentState = State.WALKING;
             velocity.x = 1;
         }

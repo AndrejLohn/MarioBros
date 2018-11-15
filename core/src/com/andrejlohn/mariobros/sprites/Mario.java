@@ -2,6 +2,8 @@ package com.andrejlohn.mariobros.sprites;
 
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
+import com.andrejlohn.mariobros.sprites.enemies.Enemy;
+import com.andrejlohn.mariobros.sprites.enemies.Turtle;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -272,6 +274,7 @@ public class Mario extends Sprite {
         feet.set(
                 new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM),
                 new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
+        fDef.filter.categoryBits = MarioBros.MARIO_FOOT_BIT;
         fDef.shape = feet;
         b2Body.createFixture(fDef);
 
@@ -317,6 +320,7 @@ public class Mario extends Sprite {
         feet.set(
                 new Vector2(-2 / MarioBros.PPM, -6 / MarioBros.PPM),
                 new Vector2(2 / MarioBros.PPM, -6 / MarioBros.PPM));
+        fDef.filter.categoryBits = MarioBros.MARIO_FOOT_BIT;
         fDef.shape = feet;
         b2Body.createFixture(fDef);
 
@@ -346,25 +350,30 @@ public class Mario extends Sprite {
     /**
      * Handles enemy hits on the player character.
      */
-    public void hit() {
-        if(marioIsBig) {
-            marioIsBig = false;
-            timeToRedefineMario = true;
-            setBounds(getX(), getY(), getWidth(), getHeight() / 2);
-            MarioBros.manager.get("audio/sounds/smb_pipe.wav", Sound.class).play();
+    public void hit(Enemy enemy) {
+        if(enemy instanceof Turtle &&
+                ((Turtle) enemy).getCurrentState() == Turtle.State.STANDING_SHELL){
+            ((Turtle) enemy).kick(this.getX() <= enemy.getX() ? Turtle.KICK_RIGHT_SPEED : Turtle.KICK_LEFT_SPEED );
         } else {
-            MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class).stop();
-            MarioBros.manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
-            marioIsDead = true;
-            Filter filter = new Filter();
-            filter.maskBits = MarioBros.NOTHING_BIT;
-            for(Fixture fixture: b2Body.getFixtureList()) {
-                fixture.setFilterData(filter);
+            if (marioIsBig) {
+                marioIsBig = false;
+                timeToRedefineMario = true;
+                setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+                MarioBros.manager.get("audio/sounds/smb_pipe.wav", Sound.class).play();
+            } else {
+                MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class).stop();
+                MarioBros.manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
+                marioIsDead = true;
+                Filter filter = new Filter();
+                filter.maskBits = MarioBros.NOTHING_BIT;
+                for (Fixture fixture : b2Body.getFixtureList()) {
+                    fixture.setFilterData(filter);
+                }
+                b2Body.applyLinearImpulse(
+                        new Vector2(0, 4f),
+                        b2Body.getWorldCenter(),
+                        true);
             }
-            b2Body.applyLinearImpulse(
-                    new Vector2(0, 4f),
-                    b2Body.getWorldCenter(),
-                    true);
         }
     }
 
