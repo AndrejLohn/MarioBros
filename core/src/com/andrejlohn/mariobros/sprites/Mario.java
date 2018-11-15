@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Mario extends Sprite {
 
-    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD };
+    public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD }
     public State currentState;
     public State previousState;
 
@@ -148,6 +148,10 @@ public class Mario extends Sprite {
 
         if(timeToRedefineMario) {
             redefineMario();
+        }
+
+        if(!marioIsDead && b2Body.getPosition().y <= 0) {
+            kill();
         }
     }
 
@@ -355,24 +359,13 @@ public class Mario extends Sprite {
                 ((Turtle) enemy).getCurrentState() == Turtle.State.STANDING_SHELL){
             ((Turtle) enemy).kick(this.getX() <= enemy.getX() ? Turtle.KICK_RIGHT_SPEED : Turtle.KICK_LEFT_SPEED );
         } else {
-            if (marioIsBig) {
+            if (isBig()) {
                 marioIsBig = false;
                 timeToRedefineMario = true;
                 setBounds(getX(), getY(), getWidth(), getHeight() / 2);
                 MarioBros.manager.get("audio/sounds/smb_pipe.wav", Sound.class).play();
             } else {
-                MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class).stop();
-                MarioBros.manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
-                marioIsDead = true;
-                Filter filter = new Filter();
-                filter.maskBits = MarioBros.NOTHING_BIT;
-                for (Fixture fixture : b2Body.getFixtureList()) {
-                    fixture.setFilterData(filter);
-                }
-                b2Body.applyLinearImpulse(
-                        new Vector2(0, 4f),
-                        b2Body.getWorldCenter(),
-                        true);
+                kill();
             }
         }
     }
@@ -425,11 +418,22 @@ public class Mario extends Sprite {
         timeToRedefineMario = false;
     }
 
-    public boolean isDead() {
-        return marioIsDead;
-    }
-
     public float getStateTimer() {
         return stateTimer;
+    }
+
+    public void kill() {
+        MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class).stop();
+        MarioBros.manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
+        marioIsDead = true;
+        Filter filter = new Filter();
+        filter.maskBits = MarioBros.NOTHING_BIT;
+        for (Fixture fixture : b2Body.getFixtureList()) {
+            fixture.setFilterData(filter);
+        }
+        b2Body.applyLinearImpulse(
+                new Vector2(0, 4f),
+                b2Body.getWorldCenter(),
+                true);
     }
 }
