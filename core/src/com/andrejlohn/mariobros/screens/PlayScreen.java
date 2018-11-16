@@ -249,6 +249,10 @@ public class PlayScreen implements Screen {
         return map;
     }
 
+    public MarioBros getGame() {
+        return game;
+    }
+
     @Override
     public void show() {
 

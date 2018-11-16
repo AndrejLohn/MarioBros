@@ -6,7 +6,6 @@ import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.sprites.items.ItemDef;
 import com.andrejlohn.mariobros.sprites.items.Mushroom;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -47,7 +46,6 @@ public class Coin extends InteractiveTileObject {
      */
     @Override
     public void onHeadHit(Mario mario) {
-        Gdx.app.log("Coin", "Collision");
         if (getCell().getTile().getId() == BLANK_COIN) {
             MarioBros.manager.get("audio/sounds/smb_bump.wav", Sound.class).play();
         } else if (object.getProperties().containsKey("mushroom")) {

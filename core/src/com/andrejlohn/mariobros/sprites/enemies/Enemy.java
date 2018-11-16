@@ -34,10 +34,10 @@ public abstract class Enemy extends Sprite {
 
     public void reverseVelocity(boolean x, boolean y) {
         if(x) {
-            velocity.x = -velocity.x;
+            velocity.x *= -1;
         }
         if(y) {
-            velocity.y = -velocity.y;
+            velocity.y *= -1;
         }
     }
 }

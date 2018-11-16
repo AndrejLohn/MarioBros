@@ -30,6 +30,9 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Mario extends Sprite {
 
+    private PlayScreen screen;
+    private MarioBros game;
+
     public enum State { FALLING, JUMPING, STANDING, RUNNING, GROWING, DEAD }
     public State currentState;
     public State previousState;
@@ -67,6 +70,8 @@ public class Mario extends Sprite {
      * @see             Sprite#setRegion(Texture)
      */
     public Mario(PlayScreen screen) {
+        this.screen = screen;
+        this.game = screen.getGame();
         this.world = screen.getWorld();
 
         currentState = State.STANDING;
@@ -237,6 +242,7 @@ public class Mario extends Sprite {
         marioIsBig = true;
         timeToDefineBigMario = true;
         setBounds(getX(), getY(), getWidth(), getHeight() * 2);
+        MarioBros.manager.get("audio/sounds/smb_powerup.wav", Sound.class).play();
     }
 
     /**
