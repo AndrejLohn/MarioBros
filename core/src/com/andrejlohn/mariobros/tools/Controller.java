@@ -71,6 +71,7 @@ public class Controller {
 
         Image leftImage = new Image(new Texture("Mario GFX/left_button.png"));
         leftImage.setSize(50, 50);
+        leftImage.getColor().a = .5f;
         leftImage.addListener(new InputListener(){
 
             @Override
@@ -87,6 +88,7 @@ public class Controller {
 
         Image rightImage = new Image(new Texture("Mario GFX/right_button.png"));
         rightImage.setSize(50, 50);
+        rightImage.getColor().a = .5f;
         rightImage.addListener(new InputListener(){
 
             @Override
@@ -103,6 +105,7 @@ public class Controller {
 
         Image upImage = new Image(new Texture("Mario GFX/up_button.png"));
         upImage.setSize(50, 50);
+        upImage.getColor().a = .5f;
         upImage.addListener(new InputListener(){
 
             @Override
@@ -118,9 +121,8 @@ public class Controller {
         });
 
         table.add(leftImage).size(leftImage.getWidth(), leftImage.getHeight());
-        table.add();
-        table.add(rightImage).size(rightImage.getWidth(), rightImage.getHeight());
-        table.add(upImage).size(upImage.getWidth(), upImage.getHeight()).padLeft(250);
+        table.add(rightImage).size(rightImage.getWidth(), rightImage.getHeight()).padLeft(10);
+        table.add(upImage).size(upImage.getWidth(), upImage.getHeight()).padLeft(240);
 
         stage.addActor(table);
     }
