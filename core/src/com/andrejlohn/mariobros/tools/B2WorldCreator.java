@@ -7,6 +7,7 @@ import com.andrejlohn.mariobros.sprites.enemies.Turtle;
 import com.andrejlohn.mariobros.sprites.tileobjects.Brick;
 import com.andrejlohn.mariobros.sprites.tileobjects.Coin;
 import com.andrejlohn.mariobros.sprites.enemies.Goomba;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -27,6 +28,7 @@ public class B2WorldCreator {
 
     private Array<Goomba> goombas;
     private Array<Turtle> turtles;
+    private AssetManager manager;
 
     /**
      * Creates the game world. Sets up all map objects (ground, pipes, boxes, coins).
@@ -41,7 +43,9 @@ public class B2WorldCreator {
      * @see             World#createBody(BodyDef)
      * @see             Body#createFixture(FixtureDef)
      */
-    public B2WorldCreator(PlayScreen screen) {
+    public B2WorldCreator(PlayScreen screen, AssetManager manager) {
+        this.manager = manager;
+
         TiledMap map = screen.getMap();
         World world = screen.getWorld();
         BodyDef bDef = new BodyDef();
@@ -92,13 +96,13 @@ public class B2WorldCreator {
         // Create brick bodies/fixtures
         for(MapObject object:
                 map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
-            new Brick(screen, object);
+            new Brick(screen, object, manager);
         }
 
         // Create coin bodies/fixtures
         for(MapObject object:
                 map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
-            new Coin(screen, object);
+            new Coin(screen, object, manager);
         }
 
         // Create Goombas
@@ -111,7 +115,8 @@ public class B2WorldCreator {
                     new Goomba(
                             screen,
                             rect.getX() / MarioBros.PPM,
-                            rect.getY() / MarioBros.PPM));
+                            rect.getY() / MarioBros.PPM,
+                            manager));
         }
 
         // Create Turtles

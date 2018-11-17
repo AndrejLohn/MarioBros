@@ -2,6 +2,7 @@ package com.andrejlohn.mariobros.sprites.enemies;
 
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Mario;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;

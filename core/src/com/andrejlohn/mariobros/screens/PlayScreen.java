@@ -109,13 +109,13 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 
-        creator = new B2WorldCreator(this);
+        creator = new B2WorldCreator(this, game.getManager());
 
-        player = new Mario(this);
+        player = new Mario(this, game.getManager());
 
         world.setContactListener(new WorldContactListener());
 
-        music = MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class);
+        music = game.getManager().get("audio/music/01_main_theme_overworld.mp3", Music.class);
         music.setLooping(true);
         music.play();
 

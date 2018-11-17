@@ -5,6 +5,7 @@ import com.andrejlohn.mariobros.scenes.Hud;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Mario;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
@@ -18,6 +19,8 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public class Brick extends InteractiveTileObject {
 
+    AssetManager manager;
+
     /**
      * Creates the brick.
      *
@@ -26,8 +29,9 @@ public class Brick extends InteractiveTileObject {
      * @see             PlayScreen
      * @see             Rectangle
      */
-    public Brick(PlayScreen screen, MapObject object) {
+    public Brick(PlayScreen screen, MapObject object, AssetManager manager) {
         super(screen, object);
+        this.manager = manager;
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.BRICK_BIT);
     }
@@ -43,9 +47,9 @@ public class Brick extends InteractiveTileObject {
             setCategoryFilter(MarioBros.DESTROYED_BIT);
             getCell().setTile(null);
             Hud.addScore(200);
-            MarioBros.manager.get("audio/sounds/smb_breakblock.wav", Sound.class).play();
+            manager.get("audio/sounds/smb_breakblock.wav", Sound.class).play();
         } else {
-            MarioBros.manager.get("audio/sounds/smb_bump.wav", Sound.class).play();
+            manager.get("audio/sounds/smb_bump.wav", Sound.class).play();
         }
     }
 }

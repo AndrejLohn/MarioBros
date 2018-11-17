@@ -4,6 +4,7 @@ import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.enemies.Enemy;
 import com.andrejlohn.mariobros.sprites.enemies.Turtle;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,6 +41,8 @@ public class Mario extends Sprite {
     public World world;
     public Body b2Body;
 
+    private AssetManager manager;
+
     private TextureRegion marioStand;
     private TextureRegion marioJump;
     private Animation<TextureRegion> marioRun;
@@ -69,10 +72,11 @@ public class Mario extends Sprite {
      * @see             Sprite#setBounds(float, float, float, float)
      * @see             Sprite#setRegion(Texture)
      */
-    public Mario(PlayScreen screen) {
+    public Mario(PlayScreen screen, AssetManager manager) {
         this.screen = screen;
         this.game = screen.getGame();
         this.world = screen.getWorld();
+        this.manager = manager;
 
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -242,7 +246,7 @@ public class Mario extends Sprite {
         marioIsBig = true;
         timeToDefineBigMario = true;
         setBounds(getX(), getY(), getWidth(), getHeight() * 2);
-        MarioBros.manager.get("audio/sounds/smb_powerup.wav", Sound.class).play();
+        manager.get("audio/sounds/smb_powerup.wav", Sound.class).play();
     }
 
     /**
@@ -369,7 +373,7 @@ public class Mario extends Sprite {
                 marioIsBig = false;
                 timeToRedefineMario = true;
                 setBounds(getX(), getY(), getWidth(), getHeight() / 2);
-                MarioBros.manager.get("audio/sounds/smb_pipe.wav", Sound.class).play();
+                manager.get("audio/sounds/smb_pipe.wav", Sound.class).play();
             } else {
                 kill();
             }
@@ -429,8 +433,8 @@ public class Mario extends Sprite {
     }
 
     public void kill() {
-        MarioBros.manager.get("audio/music/01_main_theme_overworld.mp3", Music.class).stop();
-        MarioBros.manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
+        manager.get("audio/music/01_main_theme_overworld.mp3", Music.class).stop();
+        manager.get("audio/music/smb_mariodie.wav", Sound.class).play();
         marioIsDead = true;
         Filter filter = new Filter();
         filter.maskBits = MarioBros.NOTHING_BIT;

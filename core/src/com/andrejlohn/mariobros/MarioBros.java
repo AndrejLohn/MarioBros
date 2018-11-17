@@ -41,7 +41,11 @@ public class MarioBros extends Game {
 	We will use it in the static context to save time for now.
 	DIRECT COPY FROM THE TUTORIAL
 	 */
-	public static AssetManager manager;
+	private AssetManager manager;
+
+	public AssetManager getManager() {
+	    return this.manager;
+    }
 
     /**
      * Creates the Game. Sets up the SpriteBatch and the PlayScreen.
@@ -62,6 +66,7 @@ public class MarioBros extends Game {
         manager.load("audio/sounds/smb_pipe.wav", Sound.class);
         manager.load("audio/sounds/smb_stomp.wav", Sound.class);
         manager.load("audio/music/smb_mariodie.wav", Sound.class);
+        manager.load("audio/music/smb_stage_clear.wav", Music.class);
         manager.finishLoading();
 
 		setScreen(new PlayScreen(this));

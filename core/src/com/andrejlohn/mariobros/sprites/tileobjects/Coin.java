@@ -6,6 +6,7 @@ import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Mario;
 import com.andrejlohn.mariobros.sprites.items.ItemDef;
 import com.andrejlohn.mariobros.sprites.items.Mushroom;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -25,6 +26,8 @@ public class Coin extends InteractiveTileObject {
 
     private static TiledMapTileSet tileSet;
 
+    private AssetManager manager;
+
     /**
      * Creates the coin.
      *
@@ -33,8 +36,9 @@ public class Coin extends InteractiveTileObject {
      * @see             PlayScreen
      * @see             Rectangle
      */
-    public Coin(PlayScreen screen, MapObject object) {
+    public Coin(PlayScreen screen, MapObject object, AssetManager manager) {
         super(screen, object);
+        this.manager = manager;
         tileSet = map.getTileSets().getTileSet("tileset_gutter");
         fixture.setUserData(this);
         setCategoryFilter(MarioBros.COIN_BIT);
@@ -47,7 +51,7 @@ public class Coin extends InteractiveTileObject {
     @Override
     public void onHeadHit(Mario mario) {
         if (getCell().getTile().getId() == BLANK_COIN) {
-            MarioBros.manager.get("audio/sounds/smb_bump.wav", Sound.class).play();
+            manager.get("audio/sounds/smb_bump.wav", Sound.class).play();
         } else if (object.getProperties().containsKey("mushroom")) {
             screen.spawnItem(
                     new ItemDef(
@@ -55,10 +59,9 @@ public class Coin extends InteractiveTileObject {
                                     body.getPosition().x,
                                     body.getPosition().y + 16 / MarioBros.PPM),
                                 Mushroom.class));
-            MarioBros.manager
-                    .get("audio/sounds/smb_powerup_appears.wav", Sound.class).play();
+            manager.get("audio/sounds/smb_powerup_appears.wav", Sound.class).play();
         } else {
-            MarioBros.manager.get("audio/sounds/smb_coin.wav", Sound.class).play();
+            manager.get("audio/sounds/smb_coin.wav", Sound.class).play();
         }
         Hud.addScore(100);
         getCell().setTile(tileSet.getTile(BLANK_COIN));

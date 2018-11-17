@@ -3,6 +3,7 @@ package com.andrejlohn.mariobros.sprites.enemies;
 import com.andrejlohn.mariobros.MarioBros;
 import com.andrejlohn.mariobros.screens.PlayScreen;
 import com.andrejlohn.mariobros.sprites.Mario;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -30,6 +31,7 @@ public class Goomba extends Enemy {
     private float stateTime;
     private Animation<TextureRegion> walkAnimation;
     private Array<TextureRegion> frames;
+    private AssetManager manager;
     private boolean setToDestroy;
     private boolean destroyed;
 
@@ -41,8 +43,9 @@ public class Goomba extends Enemy {
      * @param x         the position x-coordinate
      * @param y         the position y-coordinate
      */
-    public Goomba(PlayScreen screen, float x, float y) {
+    public Goomba(PlayScreen screen, float x, float y, AssetManager manager) {
         super(screen, x, y);
+        this.manager = manager;
         frames = new Array<TextureRegion>();
         for(int i=0; i<2; i++) {
             frames.add(
@@ -172,6 +175,6 @@ public class Goomba extends Enemy {
     @Override
     public void hitOnHead(Mario mario) {
         setToDestroy = true;
-        MarioBros.manager.get("audio/sounds/smb_stomp.wav", Sound.class).play();
+        manager.get("audio/sounds/smb_stomp.wav", Sound.class).play();
     }
 }
